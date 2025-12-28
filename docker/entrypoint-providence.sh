@@ -15,5 +15,11 @@ if [ -f "/var/www/html/setup.php" ]; then
   sed -i "s/\('database_name' =>\).*/\1 getenv('CA_DB_DATABASE') ?: 'providence',/;" /var/www/html/setup.php || true
 fi
 
+# Backblaze S3 Upload per curl (vereinfachter Adapter):
+export CA_B2_UPLOAD_URL="${B2_S3_ENDPOINT}/${B2_BUCKET_NAME}"
+
+# Ersetzen der lokalen Medienfolder mit Remote-Ziel
+sed -i "s#media/collectiveaccess#${CA_B2_UPLOAD_URL}#g" /var/www/html/app/conf/local/app.conf || true
+
 # Apache starten
 apache2-foreground
